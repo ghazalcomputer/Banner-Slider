@@ -1,9 +1,11 @@
 package ss.com.bannerslidersample;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +21,14 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import ss.com.bannerslider.banners.Banner;
+import ss.com.bannerslider.banners.LocalFileBanner;
 import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.events.OnBannerClickListener;
 import ss.com.bannerslider.views.BannerSlider;
@@ -26,6 +36,7 @@ import ss.com.bannerslider.views.indicators.IndicatorShape;
 
 public class MainActivity extends AppCompatActivity {
     private BannerSlider bannerSlider;
+    ImageView imageView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSettingsUi() {
         final SeekBar intervalSeekBar=(SeekBar)findViewById(R.id.seekbar_interval);
-        intervalSeekBar.setMax(10000);
+        intervalSeekBar.setMax(1000);
         intervalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -150,19 +161,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void addBanners(){
+        File extStore = Environment.getExternalStorageDirectory();
+        File fileFromOld = new File(extStore + "/banner_hint.png");
+
+        List<Banner> remoteBanners=new ArrayList<>();
         //Add banners using image urls
-        bannerSlider.addBanner(new RemoteBanner(
+        remoteBanners.add(new RemoteBanner(
                 "https://assets.materialup.com/uploads/dcc07ea4-845a-463b-b5f0-4696574da5ed/preview.jpg"
         ));
-        bannerSlider.addBanner(new RemoteBanner(
+        remoteBanners.add(new RemoteBanner(
                 "https://assets.materialup.com/uploads/4b88d2c1-9f95-4c51-867b-bf977b0caa8c/preview.gif"
         ));
-        bannerSlider.addBanner(new RemoteBanner(
+        remoteBanners.add(new RemoteBanner(
                 "https://assets.materialup.com/uploads/76d63bbc-54a1-450a-a462-d90056be881b/preview.png"
         ));
-        bannerSlider.addBanner(new RemoteBanner(
+        remoteBanners.add(new RemoteBanner(
                 "https://assets.materialup.com/uploads/05e9b7d9-ade2-4aed-9cb4-9e24e5a3530d/preview.jpg"
         ));
+
+        remoteBanners.add(new LocalFileBanner(fileFromOld));
+
+        bannerSlider.setBanners(remoteBanners);
 
     }
 
